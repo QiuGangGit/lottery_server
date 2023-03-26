@@ -102,6 +102,12 @@ func (l *Logic) Draw(ctx *gin.Context) {
 			"err": err.Error(),
 		})
 	} else {
+		// 是否已开奖
+		if drawRecord.DrawTime > 0 {
+			ctx.JSON(500, gin.H{
+				"err": "已开奖",
+			})
+		}
 		// 有进行中的抽奖
 		// 加入抽奖队列
 		l.svcCtx.Sqlite().Create(&model.UserDrawRecord{
@@ -217,6 +223,7 @@ func (l *Logic) DrawRecord(ctx *gin.Context) {
 		DrawRecordId   int    `json:"draw_record_id"`
 		PrizeName      string `json:"prize_name"`
 		IsEnd          bool   `json:"is_end"`
+		Status         int    `json:"status"`
 		DrawTime       int64  `json:"draw_time"`
 		PrizeDesc      string `json:"prize_desc"`
 		PrizeIcon      string `json:"prize_icon"`
@@ -225,7 +232,9 @@ func (l *Logic) DrawRecord(ctx *gin.Context) {
 	}
 	var results []*Result
 	err = l.svcCtx.Sqlite().Table("user_draw_record").
-		Select("user_draw_record.draw_record_id AS draw_record_id, "+
+		Select(""+
+			"user_draw_record.draw_record_id AS draw_record_id, "+
+			"user_draw_record.status AS status, "+
 			"prize.name AS prize_name, "+
 			"draw_record.draw_time AS draw_time, "+
 			"prize.desc AS prize_desc, "+
