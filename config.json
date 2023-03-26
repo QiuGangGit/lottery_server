@@ -1,5 +1,5 @@
 {
   "ListenOn": "0.0.0.0:8080",
-  "SqlitePath": "/Users/showurl/go/src/github.com/QiuGangGit/lottery_server/data.v1.db",
+  "SqlitePath": "./data.v1.db",
   "DrawCount": 3
 }
